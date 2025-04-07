@@ -1,3 +1,5 @@
+@import "../styles/base.css";
+
 .root-layout {
     margin-inline: 2rem 2rem;
 }

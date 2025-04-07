@@ -1,6 +1,6 @@
-export default function Tape() {
+export default function Tape({ className = "icon" }) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={className}>
     <path d="M21.71625 5.1450000000000005h1.1400000000000001v10.2825h-1.1400000000000001Z"></path>
     <path
         d="M20.576249999999998 15.4275h1.1400000000000001v1.1400000000000001h-1.1400000000000001Z"></path>

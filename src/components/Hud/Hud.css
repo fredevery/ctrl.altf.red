@@ -1,0 +1,164 @@
+.hud{
+    --corner-size: 2rem;
+    --strong-border-width: 3px;
+
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1000;
+    
+    .frame {
+        margin: var(--page-margin);
+        /* border-top: 1px solid var(--column-border-color); */
+        /* border-bottom: 1px solid var(--column-border-color); */
+        /* width: calc(100vw - 2rem); */
+        /* height: calc(100vh - 2rem); */
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        
+        
+        &::before,
+        &::after {
+            display: none;
+            content: '';
+            height: 1rem;
+            border-left: 1px solid var(--faint-accent-color);
+            border-right: 1px solid var(--faint-accent-color);
+            /* border-left: var(--corner-border-width) solid var(--corner-border-color); */
+            /* border-right: var(--corner-border-width) solid var(--corner-border-color); */
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+    
+        &::before {
+            border-top: 1px solid var(--faint-accent-color);
+            top: 0;
+        }
+    
+        &::after {
+            border-bottom: 1px solid var(--faint-accent-color);
+            bottom: 0;
+        }
+        
+        .borders-top,
+        .borders-bottom {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1rem;
+            border-left: 1px solid var(--faint-accent-color);
+            border-right: 1px solid var(--faint-accent-color);
+            opacity: 0.5;
+        
+            &::before,
+            &::after {
+                content: '';
+                position: absolute;
+                width: calc(50vw - 20rem);
+            }
+        
+            &::before {
+                left: 0;
+            }
+        
+            &::after {
+                right: 0;
+            }
+        }
+        
+        .borders-top {
+            top: 0;
+        
+            &::before,
+            &::after {
+                border-top: 1px solid var(--faint-accent-color);
+                top: 0;
+            }
+        }
+        
+        .borders-bottom {
+            bottom: 0;
+        
+            &::before,
+            &::after {
+                border-bottom: 1px solid var(--faint-accent-color);
+                bottom: 0;
+            }
+        }
+
+        .accents-one,
+        .accents-two {
+            --accent-offset: calc((var(--strong-border-width) * -1) + 1px);
+            position: absolute;
+            top: var(--accent-offset);
+            left: var(--accent-offset);
+            right: var(--accent-offset);
+            bottom: var(--accent-offset);
+        }
+        
+        .accents-one {
+            &::before {
+                content: '';
+                width: 4rem;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                border-top: var(--strong-border-width) solid var(--strong-accent-color);
+                /* border-bottom: var(--strong-border-width) solid var(--strong-accent-color); */
+            }
+        }
+        
+        .accents-two {
+            &::before,
+            &::after {
+                content: '';
+                height: 3rem;
+                position: absolute;
+                left: 0;
+                right: 0;
+                /* border-left: var(--strong-border-width) solid var(--strong-accent-color); */
+                /* border-right: var(--strong-border-width) solid var(--strong-accent-color); */
+            }
+            
+            &::before {
+                transform: translateY(-150%);
+                top: 50%;
+            }
+        
+            &::after {
+                transform: translateY(150%);
+                bottom: 50%;
+            }
+        }
+    }
+    
+    .os-details {
+        --details-offset: calc(var(--page-margin) * 1.4);
+        color: var(--strong-accent-color);
+        position: absolute;
+        bottom: var(--details-offset);
+        right: var(--details-offset);
+        line-height: 1em;
+        font-size: 0.75rem;
+        transform: translateX(100%) rotate(-90deg);
+        transform-origin: left bottom;
+    }
+    
+    .hud-logo {
+        position: fixed;
+        bottom: var(--page-margin);
+        left: 50%;
+        transform: translate(-50%, 50%);
+        font-family: var(--accent-mono-font);
+        color: var(--strong-accent-color);
+    }
+}

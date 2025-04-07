@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { EffectsOverlay, Hud, Background, Terminal, SVGFilters } from "@/components";
+import { EffectsOverlay, Hud, Background, Terminal, SVGFilters, Meta } from "@/components";
 import localFont from "next/font/local";
 
-import "@/styles/base.css";
 import "./layout.css";
 
 const baseMonoFont = localFont({
@@ -35,7 +34,6 @@ const accentMonoFont = localFont({
   fallback: ["monospace"],
 });
 
-console.log(baseMonoFont)
 const fontVariables = `
   :root {
     --base-mono-font: ${baseMonoFont.style.fontFamily};
@@ -67,6 +65,7 @@ export default function RootLayout({
         <Hud />
         <Terminal />
         <SVGFilters />
+        <Meta />
       </body>
     </html>
     </>

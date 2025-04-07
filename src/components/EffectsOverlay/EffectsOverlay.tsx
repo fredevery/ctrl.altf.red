@@ -1,11 +1,11 @@
-import styles from "./EffectsOverlay.module.css";
+import "./EffectsOverlay.css";
 
 export default function EffectsOverlay() {
     return (
-        <div className={styles.container}>
-            <div className={styles.grid}></div>
-            <div className={styles.frame}></div>
-            <div className={`${styles.phosphorlines} ${styles.fullscreen}`}></div>
+        <div className="effects-overlay">
+            <div className="grid"></div>
+            <div className="frame"></div>
+            <div className="phosphorlines fullscreen"></div>
         </div>
     )
 }

@@ -4,3 +4,4 @@ export { default as Background } from "./Background/Background";
 export { default as Terminal } from "./Terminal/Terminal";
 export { default as Nav } from "./Nav/Nav";
 export { default as SVGFilters } from "./SVGFilters/SVGFilters";
+export { default as Meta } from "./Meta/Meta";

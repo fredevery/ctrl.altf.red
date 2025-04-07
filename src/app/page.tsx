@@ -1,9 +1,9 @@
-import styles from "./page.module.css";
+import "./page.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <div className={styles.circle}></div>
+    <div className="home-page">
+      <div className="circle"></div>
     </div>
   );
 }

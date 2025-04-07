@@ -1,9 +1,9 @@
-import styles from "./Background.module.css";
+import "./Background.css";
 
 export default function Background() {
     return (
-        <div className={styles.container}>
-            <div className={styles.dotGrid}></div>
+        <div className="background">
+            <div className="dot-grid"></div>
         </div>
     )
 }

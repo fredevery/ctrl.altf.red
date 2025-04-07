@@ -1,11 +1,11 @@
-import styles from "./Terminal.module.css";
+import "./Terminal.css";
 export default function Terminal() {
     return (
-        <div className={styles.container}>
-            <div className={styles.prompt}>
+        <div className="terminal">
+            <div className="prompt">
                 <div>&gt;</div>
                 <div>ctrl.altf.red</div>
-                <div className={styles.cursor}></div>
+                <div className="cursor"></div>
             </div>
         </div>
     )
