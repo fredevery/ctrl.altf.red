@@ -1,16 +1,48 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { EffectsOverlay, Hud, Background, Terminal, SVGFilters } from "@/components";
+import localFont from "next/font/local";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+import "@/styles/base.css";
+import "./layout.css";
+
+const baseMonoFont = localFont({
+  src: [
+    {
+      // path: "../../public/fonts/3270/3270NerdFontMono-Regular.ttf",
+      // path: "../../public/fonts/Glass_TTY_VT220.ttf",
+      // path: "../../public/fonts/Web437_IBM_3270pc.woff",
+      // path: "../../public/fonts/Ac437_OlivettiThin_8x16.ttf",
+      // path: "../../public/fonts/Disket-Mono-Regular.ttf",
+      // path: "../../public/fonts/Arturito Slab_v2.ttf",
+      // path: "../../public/fonts/CPMono_v07 Plain.otf",
+      path: "../../public/fonts/PixelCode.woff2",
+      weight: "400",
+      style: "normal",
+    }
+  ],
+  fallback: ["monospace"],
+});
+const accentMonoFont = localFont({
+  src: [
+    {
+      // path: "../../public/fonts/Boxy-Bold.ttf",
+      // path: "../../public/fonts/Typodermic - JoystixMonospace-Regular.otf",
+      path: "../../public/fonts/Telegrama Raw.ttf",
+      weight: "400",
+      style: "normal",
+    }
+  ],
+  fallback: ["monospace"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+console.log(baseMonoFont)
+const fontVariables = `
+  :root {
+    --base-mono-font: ${baseMonoFont.style.fontFamily};
+    --accent-mono-font: ${accentMonoFont.style.fontFamily};
+  }
+`
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,10 +55,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <>
+    <style href="fonts-variables" precedence="high">{fontVariables}</style>
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body>
+        <Background />
+        <main className="root-layout">
+          {children}
+        </main>
+        <EffectsOverlay />
+        <Hud />
+        <Terminal />
+        <SVGFilters />
       </body>
     </html>
+    </>
   );
 }

@@ -1,0 +1,4 @@
+:root {
+    --page-margin: 2rem;
+    --flicker-easing: linear(0, 0.8 10%, 1 30%, 0.1 40%, 0.1 70%, 1 100%);
+}

@@ -1,0 +1,11 @@
+:root {
+    --column-border-color: gray;
+    --color-background: #282828;
+    /* --faint-accent-color: rgba(255, 255, 255, 1); */
+    --faint-accent-color: gray;
+    --strong-accent-color: orange;
+}
+
+body {
+    background-color: var(--color-background);
+}
