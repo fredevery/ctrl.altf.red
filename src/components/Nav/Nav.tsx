@@ -37,14 +37,17 @@ export default function Nav() {
     const [showNav, setShowNav] = useState(false);
     const [showNavBg, setShowNavBg] = useState(false);
     const [showNavItems, setShowNavItems] = useState(false);
-
+    const showNavItemsTimeout = useRef<NodeJS.Timeout>(null);
     useEffect(() => {
         if (!showNav) {
             setShowNavBg(false);
             setShowNavItems(false);
+            if (showNavItemsTimeout.current) {
+                clearTimeout(showNavItemsTimeout.current);
+            }
         } else {
             setShowNavBg(true);
-            setTimeout(() => setShowNavItems(true), 300);
+            showNavItemsTimeout.current = setTimeout(() => { setShowNavItems(true) }, 300);
         }
 
     }, [showNav])

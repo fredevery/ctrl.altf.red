@@ -2,6 +2,7 @@
     --corner-size: 2rem;
     --strong-border-width: 3px;
     --faint-border-color: color-mix(in srgb, var(--faint-accent-color) 50%, transparent);
+    --faint-border-color: #fff;
 
     height: 100vh;
     width: 100vw;
@@ -10,6 +11,7 @@
     left: 0;
     pointer-events: none;
     z-index: 1000;
+    /* mask-image: url("#pixel-mask"); */
     
     .frame {
         margin: var(--page-margin);
@@ -88,8 +90,8 @@
                 bottom: 0;
                 left: 50%;
                 transform: translateX(-50%);
-                border-top: var(--strong-border-width) solid var(--strong-accent-color);
-                /* border-bottom: var(--strong-border-width) solid var(--strong-accent-color); */
+                border-top: var(--strong-border-width) solid var(--color-primary);
+                /* border-bottom: var(--strong-border-width) solid var(--color-primary); */
             }
         }
         
@@ -101,8 +103,8 @@
                 position: absolute;
                 left: 0;
                 right: 0;
-                /* border-left: var(--strong-border-width) solid var(--strong-accent-color); */
-                /* border-right: var(--strong-border-width) solid var(--strong-accent-color); */
+                /* border-left: var(--strong-border-width) solid var(--color-primary); */
+                /* border-right: var(--strong-border-width) solid var(--color-primary); */
             }
             
             &::before {
@@ -119,7 +121,7 @@
     
     .os-details {
         --details-offset: calc(var(--page-margin) * 1.4);
-        color: var(--strong-accent-color);
+        color: var(--color-primary);
         position: absolute;
         bottom: var(--details-offset);
         right: var(--details-offset);
@@ -135,6 +137,6 @@
         left: 50%;
         transform: translate(-50%, 50%);
         font-family: var(--accent-mono-font);
-        color: var(--strong-accent-color);
+        color: var(--color-primary);
     }
 }

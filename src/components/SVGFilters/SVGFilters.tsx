@@ -3,6 +3,7 @@ import userAgent from "@/utilities/userAgent";
 
 export default function SVGFilters () {
     const pixelSize = 4;
+    const pixelCenter = pixelSize / 2;
     return (
         <>
         { !userAgent.iOS && (
@@ -38,16 +39,58 @@ export default function SVGFilters () {
                         </feComponentTransfer> */}
                         <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
-                    <filter id="pixelate" filterUnits="userSpaceOnUse">
-                        <feImage href="#pixel-border" result="pixelBorder" height={pixelSize * 2} width={pixelSize * 2} />
-                        <feTile in="pixelBorders" result="tiledPixels" />
-                        <feComposite in2="tiledPixels" in="SourceGraphic" operator="out" />
+                    <filter id="glitch">
+                        <feFlood 
+                            floodColor="#fff" 
+                            floodOpacity="1" 
+                            x="500"
+                            y="700"
+                            height="50"
+                            width="2000"
+                            result="block" />
+                        <feComposite
+                            operator="in"
+                            in2="block"
+                            in="SourceGraphic"
+                            result="comp" />
+                        <feOffset in="comp"
+                            dx="20"
+                            dy="0"
+                            result="offset" />
+                        <feColorMatrix
+                            in="offset"
+                            type="matrix"
+                            values="
+                                1 0 0 0 0
+                                0 0 0 0 0
+                                0 0 0 0 0
+                                1 1 1 0 0"
+                            result="out" />
+                        <feComposite
+                            operator="over"
+                            in="out"
+                            in2="SourceGraphic" />
                     </filter>
-                    <path id="pixel-border" d={`M 0,${pixelSize} H ${pixelSize * 2} M ${pixelSize},0 V ${pixelSize * 2}`} fill="none" stroke="black" strokeWidth="1" />
                 </defs>
-
             </svg>
         )}
+        <svg xmlns="http://www.w3.org/2000/svg" height="0" width="0">
+            <defs>
+                <pattern id="pixel-pattern" patternUnits="userSpaceOnUse"
+                    width={pixelSize} 
+                    height={pixelSize} 
+                    viewBox={`0 0 ${pixelSize} ${pixelSize}`}
+                    x={`calc(50vw - ${pixelCenter}px)`} 
+                    y={`calc(50vh - ${pixelCenter}px)`}>
+                        <rect x="0" y="0" width={pixelSize} height={pixelSize} fill="#666" />
+                        <rect x="0.5" y="0.5" width={pixelSize - 1} height={pixelSize - 1} fill="white" />
+                </pattern>
+                <mask id="pixel-mask">
+                    <rect x="0" y="0" width="100vw" height="100vh" fill="url(#pixel-pattern)" />
+                </mask>
+
+            </defs>
+        </svg>
         </>
     )
 }

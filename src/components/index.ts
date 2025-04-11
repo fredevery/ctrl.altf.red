@@ -5,3 +5,4 @@ export { default as Terminal } from "./Terminal/Terminal";
 export { default as Nav } from "./Nav/Nav";
 export { default as SVGFilters } from "./SVGFilters/SVGFilters";
 export { default as Meta } from "./Meta/Meta";
+export { default as Window } from "./Window/Window";

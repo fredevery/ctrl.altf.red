@@ -1,9 +1,9 @@
 :root {
     --column-border-color: gray;
-    --color-background: #282828;
+    --color-background: #222;
     /* --faint-accent-color: rgba(255, 255, 255, 1); */
+    --color-primary: hsl(30, 100%, 50%);
     --faint-accent-color: gray;
-    --strong-accent-color: orange;
 }
 
 body {

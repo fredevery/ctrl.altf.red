@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="3000px" width="4000px">
+    <defs>
+        <pattern id="pixel-pattern" patternUnits="userSpaceOnUse"
+            width="4" 
+            height="4"
+            viewBox="0 0 4 4"
+            x="calc(50vw - 2px)"
+            y="calc(50vh - 2px)">
+                <rect x="0" y="0" width="4" height="4" fill="#666" />
+                <rect x="0.5" y="0.5" width="3" height="3" fill="white" />
+        </pattern>
+        <mask id="pixel-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#pixel-pattern)" />
+        </mask>
+    </defs>
+    <rect x="0" y="0" width="100%" height="100%" fill="url(#pixel-pattern)" />
+</svg>

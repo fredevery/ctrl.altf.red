@@ -5,7 +5,7 @@
     bottom: var(--terminal-margin);
     top: var(--terminal-margin);
     width: max(30vw, 30em);
-    /* border: 1px solid var(--strong-accent-color); */
+    /* border: 1px solid var(--color-primary); */
     /* background-color: rgba(10, 10, 10, 0.6); */
     border-radius: 0.5rem;
     
@@ -17,10 +17,10 @@
         bottom: 0;
         left: 0;
         right: 0;
-        color: var(--strong-accent-color);
+        color: var(--color-primary);
         padding: 0.5rem 0.7rem;
         font-size: 0.875rem;
-        /* border-top: 1px dotted var(--strong-accent-color); */
+        /* border-top: 1px dotted var(--color-primary); */
     }
     
     

@@ -9,7 +9,7 @@
     width: var(--nav-box-size);
     height: var(--nav-box-size);
     pointer-events: all;
-    color: var(--strong-accent-color);
+    color: var(--color-primary);
     cursor: pointer;
     z-index: 1001;
 
@@ -21,7 +21,7 @@
         left: 50%;
         width: 75%;
         height: var(--nav-bar-height);
-        background: var(--strong-accent-color);
+        background: var(--color-primary);
         transform: translate(-50%, -50%);
         transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;
     }
@@ -65,9 +65,9 @@
     }
     
     &.nav-toggled {
-        border: 1px solid var(--strong-accent-color);
+        border: 1px solid var(--color-primary);
         transition: background 200ms var(--flicker-easing);
-        /* background: var(--strong-accent-color); */
+        /* background: var(--color-primary); */
     
         &::before,
         &::after {
@@ -76,18 +76,18 @@
     
         &::before {
             /* background: var(--color-background); */
-            background: var(--strong-accent-color);
+            background: var(--color-primary);
             transform: translate(-50%, 0%) rotate(45deg);
         }
     
         &::after {
             /* background: var(--color-background); */
-            background: var(--strong-accent-color);
+            background: var(--color-primary);
             transform: translate(-50%, -4%) rotate(-45deg);
         }
     
         &:hover {
-            background: var(--strong-accent-color);
+            background: var(--color-primary);
             
             &::before,
             &::after {
@@ -120,7 +120,8 @@
         right: 0;
         bottom: 0;
         backdrop-filter: blur(6px);
-        background-color: color-mix(in srgb, var(--color-background) 50%, transparent);
+        /* background-color: green; */
+        background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
         opacity: 0;
         transition: opacity 600ms;
     }
@@ -155,8 +156,8 @@
         color: var(--color-background);
         padding: 0.5rem;
         width: 100%;
-        border: 1px solid var(--strong-accent-color);
-        background-color: var(--strong-accent-color);
+        border: 1px solid var(--color-primary);
+        background-color: var(--color-primary);
         text-align: center;
         opacity: 0;
     }
@@ -170,7 +171,7 @@
     
     .nav-item {
         background-color: transparent;
-        color: var(--strong-accent-color);
+        color: var(--color-primary);
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -184,7 +185,7 @@
             .nav-item-icon {
                 transform: scale(1.1);
                 color: var(--color-background);
-                background-color: var(--strong-accent-color);
+                background-color: var(--color-primary);
             }
     
             .icon-svg {
@@ -201,7 +202,7 @@
     }
 
     .nav-item-icon {
-        border: 1px solid var(--strong-accent-color);
+        border: 1px solid var(--color-primary);
         padding: 2rem 2rem;
         transform: scale(1);
         transition: 
@@ -240,7 +241,7 @@
 
 .nav-background {
     --bg-stripe-width: 50px;
-    --bg-stripe-color: var(--strong-accent-color);
+    --bg-stripe-color: var(--color-primary);
     z-index: 10;
     background-position: 0 0;
     background-size: 200% 100%;
@@ -254,8 +255,8 @@
 }
 
 .nav-background-stripe {
-    stroke: color-mix(in srgb, var(--strong-accent-color) 60%, transparent);
-    /* stroke: var(--strong-accent-color); */
+    stroke: color-mix(in srgb, var(--faint-accent-color) 60%, transparent);
+    /* stroke: var(--color-primary); */
     stroke-width: 50px;
 }
 

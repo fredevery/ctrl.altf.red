@@ -1,5 +1,14 @@
 @import "../styles/base.css";
 
+body {
+    mask-image: url("#pixel-mask");
+    /* filter: url("#glitch") */
+    /* mask-image: url('/pixel-mask.svg'); */
+}
+
 .root-layout {
     margin-inline: 2rem 2rem;
+    position: relative;
+    /* z-index: 10; */
+    /* mask-image: url("#pixel-mask"); */
 }

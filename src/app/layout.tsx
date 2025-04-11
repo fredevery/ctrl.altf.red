@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EffectsOverlay, Hud, Background, Terminal, SVGFilters, Meta } from "@/components";
+import { EffectsOverlay, Hud, Background, SVGFilters, Meta } from "@/components";
 import localFont from "next/font/local";
 
 import "./layout.css";
@@ -33,11 +33,28 @@ const accentMonoFont = localFont({
   ],
   fallback: ["monospace"],
 });
+const titleFont = localFont({
+  src: [
+    {
+      // path: "../../public/fonts/RealVhsFontRegular-WyV0z.ttf",
+      path: "../../public/fonts/PPSupplyMono-Ultralight.woff2",
+      // path: "../../public/fonts/CPMono_v07 Plain.otf",
+      // path: "../../public/fonts/Disket-Mono-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    }
+  ],
+  declarations: [{
+    prop: "line-gap-override",
+    value: "20%"
+  }]
+})
 
 const fontVariables = `
   :root {
     --base-mono-font: ${baseMonoFont.style.fontFamily};
     --accent-mono-font: ${accentMonoFont.style.fontFamily};
+    --title-font: ${titleFont.style.fontFamily};
   }
 `
 
@@ -61,9 +78,9 @@ export default function RootLayout({
         <main className="root-layout">
           {children}
         </main>
-        <EffectsOverlay />
+        {/* <EffectsOverlay /> */}
         <Hud />
-        <Terminal />
+        {/* <Terminal /> */}
         <SVGFilters />
         <Meta />
       </body>

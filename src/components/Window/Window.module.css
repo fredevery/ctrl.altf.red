@@ -1,0 +1,26 @@
+.window {
+    color: orange;
+    position: absolute;
+    z-index: 10;
+
+    border: 1px solid var(--faint-accent-color);
+    background-color: color-mix(in srgb, var(--faint-accent-color) 10%, transparent);
+    width: 45vw;
+    top: 10vh;
+    left: 50vw;
+    /* right: 10vw; */
+}
+
+.windowHeader {
+    height: 2rem;
+    border-bottom: 1px solid var(--faint-accent-color);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(6px);
+}
+
+.windowContent {
+    padding: 1rem;
+    font-family: sans-serif;
+}

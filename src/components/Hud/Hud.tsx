@@ -33,8 +33,8 @@ export default function Hud() {
                 <div className="accents-two"></div>
             </div>
             <Nav />
-            <div className="os-details">FeOS v{getVersion()}</div>
-            <div className="hud-logo">ctrl.altf.red</div>
+            <div className="os-details phosphorous">FeOS v{getVersion()}</div>
+            {/* <div className="hud-logo">ctrl.altf.red</div> */}
         </div>
     )
 }

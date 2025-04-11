@@ -3,10 +3,11 @@
 import { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import navConfig from "./config";
+import useNavConfig from "./config";
 
 export default function NavBg({ showNavBg = false }) {
     const [ initialLoad, setInitialLoad ] = useState(true);
+    const navConfig = useNavConfig()
     const { 
         topBorder, 
         bottomBorder,
@@ -16,7 +17,7 @@ export default function NavBg({ showNavBg = false }) {
         navFrameLeft,
         navFrameRight,
         navToggleCutout
-    } = navConfig()
+    } = navConfig;
     const navBgRef = useRef(null);
     const navMaskRef = useRef(null);
     const innerCutoutRef = useRef(null);
@@ -30,29 +31,30 @@ export default function NavBg({ showNavBg = false }) {
         if (showNavBg) {
             setInitialLoad(false);
             timeline
-                .fromTo([topBorderRef.current], topBorder.out, topBorder.in)
-                .fromTo([bottomBorderRef.current], bottomBorder.out, bottomBorder.in, '<')
+                .fromTo([topBorderRef.current], topBorder.out, {...topBorder.in})
+                .fromTo([bottomBorderRef.current], bottomBorder.out, {...bottomBorder.in}, '<')
                 .fromTo([navMaskRef.current], navMask.out, {...navMask.in, delay: 0.1}, '<')
                 .fromTo([innerFrameLeftRef.current], navFrameLeft.out, { ...navFrameLeft.in, duration: 0.3, delay: 0.1}, '<')
                 .fromTo([innerFrameRightRef.current], navFrameRight.out, {...navFrameRight.in, duration: 0.3}, '<')
                 // .fromTo([navMaskRef.current], { y: -navHeight }, { y: 0 })
         } else if (!initialLoad) {
+            console.log("hiding nav bg", navMask.out);
             timeline
-                .to([navMaskRef.current], navMask.out)
+                .to([navMaskRef.current], {...navMask.out})
                 // .to([navMaskRef.current], { y: navHeight })
-                .to([topBorderRef.current], topBorder.out, '<')
-                .to([bottomBorderRef.current], bottomBorder.out, '<')
-                .to([innerFrameLeftRef.current, innerFrameRightRef.current], navFrameRight.out, '<')
+                .to([topBorderRef.current], {...topBorder.out}, '<')
+                .to([bottomBorderRef.current], {...bottomBorder.out}, '<')
+                .to([innerFrameLeftRef.current, innerFrameRightRef.current], {...navFrameRight.out}, '<')
         } else {
             timeline
-                .set([navMaskRef.current], navMask.out)
+                .set([navMaskRef.current], {...navMask.out})
                 // .to([navMaskRef.current], { y: navHeight })
-                .set([topBorderRef.current], topBorder.out)
-                .set([bottomBorderRef.current], bottomBorder.out)
-                .set([innerFrameLeftRef.current, innerFrameRightRef.current], navFrameRight.out)
+                .set([topBorderRef.current], {...topBorder.out})
+                .set([bottomBorderRef.current], {...bottomBorder.out})
+                .set([innerFrameLeftRef.current, innerFrameRightRef.current], {...navFrameRight.out})
         }
 
-    }, { scope: navBgRef, dependencies: [showNavBg, initialLoad] });
+    }, { scope: navBgRef, dependencies: [showNavBg, initialLoad, navConfig] });
     
     return (
         <div className="nav-background" ref={navBgRef} >
@@ -65,14 +67,16 @@ export default function NavBg({ showNavBg = false }) {
                         patternTransform="rotate(45)">
                             <g>
                                 <path className="nav-background-stripe" d="M50,-50 v 200 M150,-50 v 200" />
-                                <animateTransform
-                                    attributeName="transform"
-                                    attributeType="XML"
-                                    type="translate"
-                                    from="0 0"
-                                    to="-100 0"
-                                    dur="5s"
-                                    repeatCount="indefinite" />
+                                {/* { showNavBg && (
+                                    <animateTransform
+                                        attributeName="transform"
+                                        attributeType="XML"
+                                        type="translate"
+                                        from="0 0"
+                                        to="-100 0"
+                                        dur="5s"
+                                        repeatCount="indefinite" />
+                                )} */}
                             </g>
                     </pattern>
                     <mask id="nav-button-cutout-rect">
