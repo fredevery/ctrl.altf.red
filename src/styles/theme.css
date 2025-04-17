@@ -1,11 +1,14 @@
 :root {
-    --column-border-color: gray;
-    --color-background: #222;
-    /* --faint-accent-color: rgba(255, 255, 255, 1); */
-    --color-primary: hsl(30, 100%, 50%);
-    --faint-accent-color: gray;
+  --column-border-color: gray;
+  --color-background: #222;
+  --color-background-complementary: darkorange;
+  /* --faint-accent-color: rgba(255, 255, 255, 1); */
+  --color-primary: hsl(30, 100%, 50%);
+  --color-background-center: hsl(from var(--color-primary) h s calc(l * 1.1));
+  --color-background-edge: hsl(from var(--color-primary) h s calc(l * 0.25));
+  --faint-accent-color: gray;
 }
 
 body {
-    background-color: var(--color-background);
+  background-color: var(--color-background);
 }

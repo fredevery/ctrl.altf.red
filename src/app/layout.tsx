@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { EffectsOverlay, Hud, Background, SVGFilters, Meta } from "@/components";
 import localFont from "next/font/local";
 
-import "./layout.css";
+import { backgroundPortalAtom } from "@/atoms/portalAtoms";
+import Grid from "@/components/Background/Grid";
+import LayoutCube from "@/components/LayoutCube/LayoutCube";
+
+import "@/styles/base.css";
+import styles from "./layout.module.css";
 
 const baseMonoFont = localFont({
   src: [
@@ -69,22 +74,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <>
-    <style href="fonts-variables" precedence="high">{fontVariables}</style>
-    <html lang="en">
-      <body>
-        <Background />
-        <main className="root-layout">
-          {children}
-        </main>
-        {/* <EffectsOverlay /> */}
-        <Hud />
-        {/* <Terminal /> */}
-        <SVGFilters />
-        <Meta />
-      </body>
-    </html>
+      <style href="fonts-variables" precedence="high">{fontVariables}</style>
+      <html lang="en">
+        <body className={`${styles.pixelMask} ${styles.body}`}>
+          <main className={styles.rootLayout}>
+            <LayoutCube>
+              {children}
+            </LayoutCube>
+          </main>
+          {/* <EffectsOverlay /> */}
+          <Background />
+          <Grid />
+          <Hud />
+          {/* <Terminal /> */}
+          <SVGFilters />
+          <Meta />
+        </body>
+      </html>
     </>
   );
 }

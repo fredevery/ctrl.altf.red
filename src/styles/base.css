@@ -4,3 +4,23 @@
 @import url("./typography.css") layer(base);
 @import url("./theme.css") layer(themes);
 @import url("./effects.css") layer(effects);
+
+.image-loader-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0.3;
+}
+
+.fps-label {
+    position: fixed;
+    top: 3rem;
+    right: 2rem;
+    border: 1px solid white;
+    min-height: 2rem;
+    min-width: 2rem;
+    z-index: 1000;
+    color: white;
+    padding: 0.5em 1em;
+}

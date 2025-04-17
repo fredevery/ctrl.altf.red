@@ -1,10 +1,19 @@
-import styles from "./page.module.css";
-// import { Window } from "@/components";
+'use client';
+import { useAtom } from "jotai";
+import dynamic from "next/dynamic";
 
+import { pageTransitionAtom } from "@/atoms/pageTransitionAtoms";
+import Page from "@/components/Page/Page";
+
+const FredHead = dynamic(() => import("@/components/FredHead/FredHeadP5"), { ssr: false });
+
+import styles from "./page.module.css";
 export default function Home() {
+  const transitioning = useAtom(pageTransitionAtom)[0];
   return (
-    <div className={styles.homePage}>
+    <Page className={styles.homePage}>
       {/* <Window /> */}
+      {!transitioning && <FredHead />}
       <div className={`${styles.pageTitle} phosphorous`}>
         <div className={styles.pageTitleMain}>
           <span className={styles.titlePart}>ctrl</span>
@@ -15,6 +24,6 @@ export default function Home() {
           &lt; portfolio of fred every /&gt;
         </div>
       </div>
-    </div>
+    </Page>
   );
 }

@@ -1,8 +1,11 @@
 export type Pixel = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+  color: {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  };
+  alpha: number;
   l: number;
   x: number;
   y: number;
@@ -16,12 +19,21 @@ export type ImageData = {
   pixelSize: number;
   width: number;
   height: number;
+  zoomedWidth: number;
+  zoomedHeight: number;
   loaded: boolean;
 };
 type Callback = (data: ImageData) => void;
 type LoaderOptions = {
   zoom?: number;
   origin?: string[];
+  pixelSize: number | null;
+  width: number;
+  height: number;
+  canvasWidth: number;
+  canvasHeight: number;
+  xOffset: number;
+  yOffset: number;
 };
 
 export function emptyImageData(): ImageData {
@@ -30,6 +42,8 @@ export function emptyImageData(): ImageData {
     pixelSize: 0,
     width: 0,
     height: 0,
+    zoomedWidth: 0,
+    zoomedHeight: 0,
     loaded: false,
   };
 }
@@ -37,6 +51,13 @@ export function emptyImageData(): ImageData {
 const DEFAULT_OPTIONS = {
   zoom: 1,
   origin: ["center", "center"],
+  pixelSize: null,
+  width: 0,
+  height: 0,
+  canvasWidth: 0,
+  canvasHeight: 0,
+  xOffset: 0,
+  yOffset: 0,
 };
 
 export function loadImageData(
@@ -44,39 +65,71 @@ export function loadImageData(
   callback: Callback | null = null,
   options: LoaderOptions = DEFAULT_OPTIONS
 ) {
-  const image = new Image();
   const loaderOptions = { ...DEFAULT_OPTIONS, ...options };
+  if (loaderOptions.height === 0 || loaderOptions.width === 0) return;
+
+  const imageWidth = loaderOptions.width!;
+  const imageHeight = loaderOptions.height!;
+  const image = new Image(imageWidth, imageHeight);
+  const resolvedXOffset = loaderOptions.canvasWidth * loaderOptions.xOffset;
+  const resolvedYOffset = loaderOptions.canvasHeight * loaderOptions.yOffset;
+  // console.log(
+  //   { imageWidth, imageHeight, imageCenterX, imageCenterY },
+  //   imageCenterX / 2
+  // );
   image.src = src;
 
   image.onload = () => {
     const canvas = document.createElement("canvas");
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.width = loaderOptions.canvasWidth;
+    canvas.height = loaderOptions.canvasHeight;
+
+    canvas.classList = "image-loader-canvas";
+    document.body.appendChild(canvas);
 
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Failed to get canvas context");
-    context.drawImage(image, 0, 0);
+    const zoomWidth = Math.floor(image.width * loaderOptions.zoom);
+    const zoomHeight = Math.floor(image.height * loaderOptions.zoom);
+    const zoomXOffset = Math.floor((image.width - zoomWidth) / 2);
+    const zoomYOffset = Math.floor((image.height - zoomHeight) / 2);
 
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = imageData.data;
-    const pixelSize = Math.floor(
-      (window.innerHeight / image.height) * loaderOptions.zoom
-    );
-    const processedPixels: Pixel[] = [];
-    const [originX, originY] = getOrigin(
-      image.width,
-      image.height,
+    const [imageOriginX, imageOriginY] = getOrigin(
+      imageWidth,
+      imageHeight,
       loaderOptions.origin![0],
       loaderOptions.origin![1]
     );
-    const zoomXOffset = Math.floor(
-      (image.width - image.width / loaderOptions.zoom) / 2
+    const [zoomOriginX, zoomOriginY] = getOrigin(
+      zoomWidth,
+      zoomHeight,
+      loaderOptions.origin[0],
+      loaderOptions.origin[1]
     );
-    const zoomYOffset = Math.floor(
-      (image.height - image.height / loaderOptions.zoom) / 2
+    const [canvasOriginX, canvasOriginY] = getOrigin(
+      loaderOptions.canvasWidth,
+      loaderOptions.canvasHeight,
+      loaderOptions.origin[0],
+      loaderOptions.origin[1]
     );
-    const startX = originX - image.width / 2 + zoomXOffset;
-    const startY = originY - image.height / 2 + zoomYOffset;
+
+    const zoomX = canvasOriginX - zoomOriginX;
+    const zoomY = canvasOriginY - zoomOriginY;
+    // console.log("zoomDims", zoomWidth, zoomHeight, zoomOriginX, zoomOriginY);
+
+    context.drawImage(image, zoomX, zoomY, zoomWidth, zoomHeight);
+
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+    const pixelSize =
+      loaderOptions.pixelSize ||
+      Math.floor((window.innerHeight / image.height) * loaderOptions.zoom);
+    const processedPixels: Pixel[] = [];
+
+    // canvas.style.left = -imageOriginX + canvasOriginX + resolvedXOffset + "px";
+    // canvas.style.top = -imageOriginY + canvasOriginY + resolvedYOffset + "px";
+    // const startX = originX - image.width / 2 + zoomXOffset;
+    // const startY = originY - image.height / 2 + zoomYOffset;
     // console.table([
     //   {
     //     axis: "X",
@@ -96,25 +149,30 @@ export function loadImageData(
     //   },
     // ]);
 
-    for (let y = startY; y < image.height; y++) {
-      for (let x = startX; x < image.width; x++) {
-        const i = (y * image.width + x) * 4;
+    for (let y = pixelSize / 2; y < canvas.height; y += pixelSize) {
+      for (let x = pixelSize / 2; x < canvas.width; x += pixelSize) {
+        const i = (y * canvas.width + x) * 4;
         const r = pixels[i];
         const g = pixels[i + 1];
         const b = pixels[i + 2];
         // const a = pixels[i + 3];
         const l = (r + g + b) / 3;
-        const a = l / 255;
+        const a = l;
 
-        if (l < 50) continue; // Skip transparent pixels
+        const resolvedX = x - imageOriginX + canvasOriginX + resolvedXOffset;
+        const resolvedY = y - imageOriginY + canvasOriginY + resolvedYOffset;
+
+        // if (resolvedX > 1400) {
+        //   console.log(x, resolvedX);
+        // }
+
+        // if (l < 50) continue; // Skip transparent pixels
         processedPixels.push({
-          r,
-          g,
-          b,
-          a,
+          color: { r, g, b, a },
+          alpha: a,
           l,
-          x,
-          y,
+          x: resolvedX,
+          y: resolvedY,
           baseX: x,
           baseY: y,
           size: pixelSize,
@@ -127,10 +185,10 @@ export function loadImageData(
       pixelSize,
       width: image.width,
       height: image.height,
+      zoomedWidth: image.width * pixelSize,
+      zoomedHeight: image.height * pixelSize,
       loaded: true,
     };
-
-    // console.table(processedImageData, ["pixelSize"]);
 
     if (callback) callback(processedImageData);
 

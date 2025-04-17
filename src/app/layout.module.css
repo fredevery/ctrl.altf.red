@@ -1,0 +1,23 @@
+.body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.pixelMask {
+    mask-image: url("#pixel-mask");
+    /* filter: url("#glitch") */
+    /* mask-image: url('/pixel-mask.svg'); */
+}
+
+.rootLayout {
+    position: relative;
+    z-index: var(--layer-content);
+    perspective: 100vw;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    /* z-index: 10; */
+    /* mask-image: url("#pixel-mask"); */
+}
+
