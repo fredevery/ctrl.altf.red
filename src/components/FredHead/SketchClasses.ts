@@ -134,12 +134,13 @@ export class GridPixel {
   }
 
   get drawColor() {
-    return this.drawState.startsWith("infected")
-      ? this.p.color(
-          this.p.random(255),
-          mapRange(this.changeAge, 1, 20, 255, 0)
-        )
-      : this.color.pColor;
+    return this.p.color(166, 0, 255, this.color.a);
+    // return this.drawState.startsWith("infected")
+    //   ? this.p.color(
+    //       this.p.random(255),
+    //       mapRange(this.changeAge, 1, 20, 255, 0)
+    //     )
+    //   : this.color.pColor;
     // return this.changes?.color?.pColor || this.color.pColor;
   }
 
@@ -248,7 +249,7 @@ export class GridPixel {
 
   drawAscii() {
     if (this.isInfected) {
-      this.p.fill(this.p.random(127), 255 / this.changeAge + 1);
+      this.p.fill(204, 255, 0, 255 / this.changeAge + 1);
       this.drawRect();
       this.p.fill(this.drawColor!);
     }
@@ -579,12 +580,10 @@ export class ImageLoader {
   }
 
   loadImage() {
-    console.log("loading", this.src);
     this.image.src = this.src;
   }
 
   handleImageLoaded() {
-    console.log("loading complete");
     this.imageLoaded = true;
     this.processImage();
     this.onLoadCallback(this);
@@ -623,7 +622,6 @@ export class ImageLoader {
     const pixels = [];
     let yResolution = 0;
     let xResolution = 0;
-    console.log(pixelSize);
     for (let y = pixelSize / 2; y < canvasHeight - pixelSize; y += pixelSize) {
       yResolution++;
 
@@ -705,9 +703,6 @@ export class PixelMap {
 
   loadPixels(pixels: ImagePixel[]) {
     this.pixels = pixels;
-    console.log(this.xResolution);
-    console.log(this.yResolution);
-    console.log(pixels);
     // pixels.forEach((pixel, i) => {
     //   pixel.x = pixel.i % this.xResolution;
     //   pixel.y = Math.floor(i / this.xResolution);
@@ -738,7 +733,7 @@ export class MousePosition {
     this.pixelGrid = pixelGrid;
   }
 
-  setViewPos(x: number, y: number) {
+  setViewPos({ x, y }: { x: number; y: number }) {
     if (!this.pixelGrid) return;
     const gridPos = this.pixelGrid!.viewPositionToGrid(x, y);
     this.x = x;

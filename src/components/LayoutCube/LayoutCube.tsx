@@ -6,7 +6,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { usePageTransitionState } from "@/atoms/pageTransitionAtoms";
 import { usePathname } from "next/navigation";
 import { useWindowResize } from "@/utilities/useWindowResize";
-
+import Grid from "@/components/Grid/Grid";
+import GridBackground from "./GridBackground";
 import styles from "./LayoutCube.module.css";
 
 type CubeOrientation = {
@@ -33,32 +34,32 @@ const RIGHT: TransitionDirection = { rotateY: 90 };
 
 
 const FACE_UP: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 90,
     rotateY: 0,
 }
 const FACE_FRONT: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 0,
     rotateY: 0,
 }
 const FACE_RIGHT: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 0,
     rotateY: 90,
 }
 const FACE_BACK: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 0,
     rotateY: 180,
 }
 const FACE_LEFT: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 0,
     rotateY: 270,
 }
 const FACE_DOWN: FacePosition = {
-    translateZ: 50,
+    translateZ: 49.5,
     rotateX: 270,
     rotateY: 0,
 }
@@ -138,11 +139,6 @@ function getRandomFace(currentCubeOrientation: CubeOrientation): [FacePosition, 
         rotateY: randomFace.rotateY ? randomFace.rotateY + Math.floor(rotateY / randomFace.rotateY) * 360 : randomFace.rotateY + 360,
     }
 
-    console.log("====== RANDOM FACE =====")
-    console.log("randomFace", randomFace)
-    console.log("orientation", randomFaceOrientation);
-    console.log("currentCubeOrientation", { rotateX, rotateY });
-
     return [randomFace, randomFaceOrientation] as [FacePosition, TransitionDirection];
 }
 
@@ -164,10 +160,6 @@ function getClosestFace(orientation: CubeOrientation): [FacePosition, Transition
         rotateX: closestFace.rotateX,
         rotateY: closestFace.rotateY,
     }
-    console.log("====== CLOSEST FACE =====")
-    console.log(filteredFaces, sortedFaces)
-    console.log("orientation", orientation);
-    console.log("closestFace", closestFace);
     return [closestFace, closestFaceOrientation] as [FacePosition, TransitionDirection];
 }
 
@@ -180,147 +172,20 @@ function CubeFace({
 }>) {
     const faceRef = useRef<HTMLDivElement>(null);
     const facePosition = positionToCSS(position);
+    const pageTransitionState = usePageTransitionState();
 
     return (
         <div ref={faceRef}
-            className={styles.cubeFace}
+            className={`${styles.cubeFace} ${pageTransitionState.isIdle() ? styles.cubeFaceIdle : ''}`}
             style={facePosition}>
-            {children}
+            <div className={styles.cubeFaceContent}>
+                {children}
+            </div>
+            <Grid />
         </div>
     )
 }
 
-function GridBackground() {
-    const { width, height } = useWindowResize();
-    const strokeWidth = 3;
-    const strokeColor = "var(--color-background-complementary)";
-    const backTop = height * 0.3;
-    const backLeft = width * 0.3;
-    const backWidth = width - (backLeft * 2);
-    const backHeight = height - (backTop * 2);
-    const backRight = width - backLeft;
-    const backBottom = height - backTop;
-
-    return (
-        <svg className={styles.gridBackground} viewBox={`0 0 ${width} ${height}`}>
-            <rect
-                x={backLeft}
-                y={backTop}
-                width={backWidth}
-                height={backHeight}
-                fill="none" stroke={strokeColor}
-                strokeWidth={strokeWidth} />
-
-            {[0.1, 0.5, 0.8].map((multiplier, i) => (
-                <rect
-                    key={`grid-rect-${i}`}
-                    x={backLeft * multiplier}
-                    y={backTop * multiplier}
-                    width={width - backLeft * multiplier * 2}
-                    height={height - backTop * multiplier * 2}
-                    fill="none" stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            )
-            )}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-top-${i}`}
-                    x1={width * multiplier}
-                    y1={0}
-                    x2={backLeft + (backWidth * multiplier)}
-                    y2={backTop}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-right-${i}`}
-                    x1={width}
-                    y1={height * multiplier}
-                    x2={backRight}
-                    y2={backTop + (backHeight * multiplier)}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-top-${i}`}
-                    x1={width * multiplier}
-                    y1={height}
-                    x2={backLeft + (backWidth * multiplier)}
-                    y2={backBottom}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-left-${i}`}
-                    x1={0}
-                    y1={height * multiplier}
-                    x2={backLeft}
-                    y2={backTop + (backHeight * multiplier)}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-horizontal-${i}`}
-                    x1={backLeft}
-                    y1={backTop + (backHeight * multiplier)}
-                    x2={backRight}
-                    y2={backTop + (backHeight * multiplier)}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            {[0.25, 0.5, 0.75].map((multiplier, i) => (
-                <line
-                    key={`grid-line-vertical-${i}`}
-                    x1={backLeft + (backWidth * multiplier)}
-                    y1={backTop}
-                    x2={backLeft + (backWidth * multiplier)}
-                    y2={backBottom}
-                    stroke={strokeColor}
-                    strokeWidth={strokeWidth} />
-            ))}
-
-            <line
-                x1={0}
-                y1={0}
-                x2={backLeft}
-                y2={backTop}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth} />
-            <line
-                x1={width}
-                y1={0}
-                x2={backRight}
-                y2={backTop}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth} />
-            <line
-                x1={width}
-                y1={height}
-                x2={backRight}
-                y2={backBottom}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth} />
-            <line
-                x1={0}
-                y1={height}
-                x2={backLeft}
-                y2={backBottom}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth} />
-
-        </svg>
-    )
-}
 
 export default function LayoutCube({
     children
@@ -346,8 +211,8 @@ export default function LayoutCube({
         if (pageTransitionState.isEnter()) return;
         const { rotateX, rotateY } = currentCubeOrientation.current;
         currentCubeOrientation.current = {
-            rotateX: rotateX + 1,
-            rotateY: rotateY + 1,
+            rotateX: rotateX + 1 * (Math.random() * 0.5 - 1),
+            rotateY: rotateY + 1 * (Math.random() * 0.5 - 1),
         }
         gsap.set(cubeRef.current, currentCubeOrientation.current);
     })
@@ -361,7 +226,6 @@ export default function LayoutCube({
     }, [pageTransitionState, pathname])
 
     useGSAP(() => {
-        console.log("STATE >>>", pageTransitionState.state);
         if (pageTransitionState.isComplete()) {
             currentCubeOrientation.current = {
                 rotateY: 0,
@@ -377,13 +241,14 @@ export default function LayoutCube({
         const timeline = gsap.timeline({
             defaults: {
                 duration: 0.5,
-                ease: "power2.inOut",
+                // ease: "power2.inOut",
             },
         });
 
         if (pageTransitionState.isExit()) {
             directionRef.current = getTransitionDirection();
             timeline.to(cubeTranslateRef.current, {
+                delay: 0.5,
                 translateZ: "-250vw",
                 onComplete: () => {
                     setShowChildren(false);
@@ -392,8 +257,8 @@ export default function LayoutCube({
                 }
             })
             currentCubeOrientation.current = {
-                rotateX: Math.random() * 60 + 30,
-                rotateY: Math.random() * 60 + 30,
+                rotateX: Math.random() * 180 + 30,
+                rotateY: Math.random() * 180 + 30,
             }
             timeline.to(cubeRef.current, {
                 ...currentCubeOrientation.current,
@@ -425,7 +290,7 @@ export default function LayoutCube({
                 onComplete: () => setShowChildren(true)
             });
             timeline.to(cubeTranslateRef.current, {
-                translateZ: "-50vw",
+                translateZ: "-49vw",
                 onComplete: () => {
                     pageTransitionState.setToComplete();
                 }
@@ -437,20 +302,21 @@ export default function LayoutCube({
         <>
             <div ref={cubeTranslateRef} className={styles.cubeTranslate}>
                 <div ref={cubeRef} className={`${styles.cube} ${pageTransitionState.isIdle() ? '' : styles.cubeTransitioning}`}>
-                    {showChildren ? (
+                    {showChildren && (
                         <CubeFace position={renderFace}>
                             {children}
                         </CubeFace>
-                    ) : (
+                    )}
+                    {!pageTransitionState.isIdle() && (
                         <>
                             <CubeFace key="face-front" position={FACE_FRONT} />
                             <CubeFace key="face-back" position={FACE_BACK} />
+                            <CubeFace key="face-left" position={FACE_LEFT} />
+                            <CubeFace key="face-right" position={FACE_RIGHT} />
+                            <CubeFace key="face-up" position={FACE_UP} />
+                            <CubeFace key="face-down" position={FACE_DOWN} />
                         </>
                     )}
-                    <CubeFace key="face-left" position={FACE_LEFT} />
-                    <CubeFace key="face-right" position={FACE_RIGHT} />
-                    <CubeFace key="face-up" position={FACE_UP} />
-                    <CubeFace key="face-down" position={FACE_DOWN} />
                 </div>
             </div>
             <GridBackground />

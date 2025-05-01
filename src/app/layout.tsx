@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { EffectsOverlay, Hud, Background, SVGFilters, Meta } from "@/components";
+import { /*EffectsOverlay,*/ Hud, Background, SVGFilters, Meta } from "@/components";
 import localFont from "next/font/local";
 
-import { backgroundPortalAtom } from "@/atoms/portalAtoms";
-import Grid from "@/components/Background/Grid";
+// import { backgroundPortalAtom } from "@/atoms/portalAtoms";
+// import Grid from "@/components/Grid/Grid";
 import LayoutCube from "@/components/LayoutCube/LayoutCube";
 
 import "@/styles/base.css";
@@ -87,7 +87,7 @@ export default function RootLayout({
           </main>
           {/* <EffectsOverlay /> */}
           <Background />
-          <Grid />
+          {/* <Grid /> */}
           <Hud />
           {/* <Terminal /> */}
           <SVGFilters />

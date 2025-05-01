@@ -2,5 +2,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: orange;
+  color: var(--color-primary);
 }

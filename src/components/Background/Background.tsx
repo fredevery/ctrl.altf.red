@@ -1,12 +1,12 @@
 'use client';
 
 import styles from "./Background.module.css";
-import Grid from "./Grid";
+import Grid from "../Grid/Grid";
 
 export default function Background() {
     return (
         <div className={styles.background}>
-            <Grid />
+            {/* <Grid /> */}
         </div>
     )
 }

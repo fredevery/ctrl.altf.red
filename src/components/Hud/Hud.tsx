@@ -26,14 +26,14 @@ export default function Hud() {
 
     return (
         <div className="hud">
-            <div className="frame">
+            {/* <div className="frame">
                 <div className="borders-top"></div>
                 <div className="borders-bottom"></div>
                 <div className="accents-one"></div>
                 <div className="accents-two"></div>
-            </div>
+            </div> */}
             <Nav />
-            <div className="os-details phosphorous">FeOS v{getVersion()}</div>
+            {/* <div className="os-details phosphorous">FeOS v{getVersion()}</div> */}
             {/* <div className="hud-logo">ctrl.altf.red</div> */}
         </div>
     )

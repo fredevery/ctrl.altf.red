@@ -14,6 +14,10 @@ const NavBg = dynamic(() => import("./NavBg"), { ssr: false })
 
 const NAV_ITEMS = [
     {
+        label: "Home",
+        href: "/"
+    },
+    {
         label: "Studio",
         href: "/studio"
     },
@@ -69,7 +73,7 @@ export default function Nav() {
             <div className={`nav-toggle ${showNav ? "nav-toggled" : ''} phosphorous`} onClick={toggleNav}>
                 <div className="nav-toggle-label">open</div>
             </div>
-            <nav className={`nav ${showNavBg ? "nav-open" : ''}`} ref={navRef}>
+            <nav className={`nav ${showNavBg ? "nav-open" : ''}`} ref={navRef} inert={showNav ? undefined : true}>
                 <div className="nav-container">
                     <div className="nav-content">
                         {/* <div className="nav-logo">ctrl.altf.red</div> */}

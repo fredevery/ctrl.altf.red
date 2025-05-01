@@ -1,12 +1,17 @@
 :root {
   --column-border-color: gray;
-  --color-background: #222;
-  --color-background-complementary: darkorange;
+  --color-background: #0b0117;
+  --color-background-complementary: hsl(83, 100%, 50%);
   /* --faint-accent-color: rgba(255, 255, 255, 1); */
-  --color-primary: hsl(30, 100%, 50%);
+  --color-primary: hsl(318, 100%, 50%);
   --color-background-center: hsl(from var(--color-primary) h s calc(l * 1.1));
   --color-background-edge: hsl(from var(--color-primary) h s calc(l * 0.25));
+  --color-border: rgba(255, 255, 255, 0.5);
+  --color-subtle: rgb(37, 2, 44);
   --faint-accent-color: gray;
+  --color-window-border: rgba(255, 255, 255, 0.7);
+  --color-window-background: rgb(from var(--color-background) r g b / 0.8);
+  --color-window-title: rgba(255, 255, 255, 0.7);
 }
 
 body {

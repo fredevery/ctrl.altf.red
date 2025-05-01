@@ -6,6 +6,7 @@ import { useRef, useEffect } from "react";
 import { useWindowResize } from "@/utilities/useWindowResize";
 import rem from "@/utilities/rem";
 import { PixelGrid, ImageLoader, MousePosition, type GridPixel } from './SketchClasses';
+import { useGlobalState } from "@/atoms/globalStateAtoms";
 
 import styles from "./FredHead.module.css";
 
@@ -18,34 +19,38 @@ const Y_OFFSET = -0.1;
 // const MAX_MOUSE_POSITION_AGE = 40;
 // const MAX_GLITCH_AGE = 60;
 const FRAMERATE = 30;
-const PIXEL_SIZE_REM = 1;
+const GENERATION_RATE = Math.floor(FRAMERATE / 15);
+const MAX_CHANGE_AGE = 100;
+const PIXEL_SIZE_REM = 0.875;
 // const BASE_PIXEL_COLOR = "#666";
 
 interface Renderer extends p5.Renderer {
     drawingContext: CanvasRenderingContext2D | null;
 }
 
-const fps = {
-    high: 0,
-    low: 1000000,
-    current: 0,
-    history: [] as number[],
-    maxHistory: 100,
-    avg: 0
-}
-
 export default function FredHeadP5() {
     const { width: windowWidth, height: windowHeight } = useWindowResize();
+    const globalState = useGlobalState();
     const canvasContainerRef = useRef<HTMLDivElement>(null);
     const pixelSize = useRef<number>(1);
     const pixelGrid = useRef<PixelGrid>(new PixelGrid({}));
     const imageLoader = useRef<ImageLoader>(new ImageLoader({}))
     const mousePos = useRef<MousePosition>(new MousePosition())
-    const fpsLabel = useRef(document.createElement('div'));
-    fpsLabel.current.classList.add('fps-label');
-    document.body.appendChild(fpsLabel.current);
+    // const fpsLabel = useRef(document.createElement('div'));
+    // fpsLabel.current.classList.add('fps-label');
+    // document.body.appendChild(fpsLabel.current);
+    useEffect(() => {
+        function handleMouseMove(e: MouseEvent) {
+            mousePos.current.setViewPos({ x: e.clientX, y: e.clientY });
+        }
+        globalState.onMouseMove(handleMouseMove);
+        return () => globalState.offMouseMove(handleMouseMove);
+    })
+
 
     useEffect(() => {
+        // const fpsLabelElem = fpsLabel.current;
+        let sketch: p5;
         pixelSize.current = rem(PIXEL_SIZE_REM);
         imageLoader.current = new ImageLoader({
             src: "/images/fred-head-1080x1080.jpg",
@@ -58,20 +63,15 @@ export default function FredHeadP5() {
             yOffset: Y_OFFSET,
             pixelSize: pixelSize.current
         }).onLoad((imageLoader) => {
-            setupSketch();
-            console.log('Image loaded');
+            sketch = setupSketch();
             pixelGrid.current.loadMap(imageLoader.pixelMap);
         });
 
-        function handleMouseMove(e: MouseEvent) {
-            mousePos.current.setViewPos(e.clientX, e.clientY);
-        }
-
-        document.addEventListener('mousemove', handleMouseMove)
 
         return () => {
-            document.removeEventListener('mousemove', handleMouseMove)
             imageLoader.current.destroy();
+            if (sketch) sketch.remove();
+            // fpsLabelElem.parentElement?.removeChild(fpsLabelElem);
         }
     }, [windowWidth, windowHeight])
 
@@ -132,17 +132,18 @@ export default function FredHeadP5() {
                 }
                 mousePos.current.update();
 
-                if (pixelGrid.current.hasPendingDraws) {
+                if (pixelGrid.current.hasPendingDraws && p.frameCount % GENERATION_RATE === 0) {
                     p.clear();
 
-                    const infectedPixels:GridPixel[] = [];
-                    const healthyPixels:GridPixel[]  = [];
+                    const infectedPixels: GridPixel[] = [];
+                    const healthyPixels: GridPixel[] = [];
 
                     pixelGrid.current.processChangedPixels((pixel) => {
                         pixel.allNeighbors.forEach((currentNeighbor) => {
                             const infectedNeighborsCount = currentNeighbor.allInfectedNeighbors.length;
                             if (
                                 (infectedNeighborsCount === 2 && currentNeighbor.isInfected) ||
+                                // (infectedNeighborsCount === 2) ||
                                 (infectedNeighborsCount === 3)
                             ) {
                                 infectedPixels.push(currentNeighbor);
@@ -151,7 +152,7 @@ export default function FredHeadP5() {
                             }
                         });
 
-                        if (pixel.changeAge > FRAMERATE * 2) {
+                        if (pixel.changeAge > MAX_CHANGE_AGE) {
                             pixel.resetChanges();
                         }
                     }).draw();
@@ -167,25 +168,6 @@ export default function FredHeadP5() {
                     })
                 }
 
-                const frameRate = p.frameRate();
-                fps.history.push(frameRate);
-                if (fps.history.length > fps.maxHistory) {
-                    fps.history.shift();
-                }
-
-                fps.high = Math.max(...fps.history);
-                fps.low = Math.min(...fps.history);
-                fps.current = frameRate;
-                fps.avg = fps.history.reduce((a, b) => a + b, 0) / fps.history.length;
-
-                fpsLabel.current.innerHTML = [
-                    fps.low.toFixed(2),
-                    fps.avg.toFixed(2),
-                    fps.high.toFixed(2),
-                    fps.current.toFixed(2),
-                    pixelGrid.current.changedPixels.length,
-                ].join(' | ')
-
             }
 
             p.mouseClicked = () => {
@@ -198,5 +180,5 @@ export default function FredHeadP5() {
 
     return (
         <div ref={canvasContainerRef} className={`${styles.fredHeadContainer} phosphorous`}></div>
-    ) 
+    )
 }

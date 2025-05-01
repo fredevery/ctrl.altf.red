@@ -57,6 +57,7 @@
   z-index: var(--layer-grid);
   perspective: 100vw;
   transform-style: preserve-3d;
+  pointer-events: none;
 }
 
 .gridPattern,

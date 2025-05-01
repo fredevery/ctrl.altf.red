@@ -1,26 +1,88 @@
 .window {
-    color: orange;
-    position: absolute;
-    z-index: 10;
+  /* color: orange; */
+  /* position: absolute; */
+  /* z-index: 10; */
 
-    border: 1px solid var(--faint-accent-color);
-    background-color: color-mix(in srgb, var(--faint-accent-color) 10%, transparent);
-    width: 45vw;
-    top: 10vh;
-    left: 50vw;
-    /* right: 10vw; */
+  border: 1px solid var(--color-window-border);
+  background-color: var(--color-window-background);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  /* border-radius: 4px; */
+  overflow: hidden;
+
+  .dragging {
+    cursor: grabbing;
+  }
+
+  /* background-color: color-mix(in srgb, var(--faint-accent-color) 10%, transparent); */
+  /* width: 45vw; */
+  /* top: 10vh; */
+  /* left: 50vw; */
+  /* right: 10vw; */
 }
 
 .windowHeader {
-    height: 2rem;
-    border-bottom: 1px solid var(--faint-accent-color);
-    width: 100%;
-    position: sticky;
-    top: 0;
-    backdrop-filter: blur(6px);
+  height: 2rem;
+  border-bottom: 1px solid var(--color-window-border);
+  width: 100%;
+  flex: none;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+
+  .windowHeaderRight,
+  .windowHeaderLeft {
+    margin: 4px;
+    height: calc(100% - 8px);
+    aspect-ratio: 1;
+    border: 1px solid var(--color-window-border);
+    flex: none;
+  }
+
+  .windowTitle {
+    color: var(--color-window-title);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    flex: none;
+    margin: 0 1rem;
+  }
+
+  .windowHeaderAccent {
+    margin: 0 5px;
+    flex: 1;
+    position: relative;
+    height: 100%;
+
+    &::before,
+    &::after {
+      content: "";
+      left: 1rem;
+      right: 1rem;
+      height: 1px;
+      background-color: var(--color-window-border);
+      position: absolute;
+      top: 40%;
+    }
+
+    &::after {
+      top: 60%;
+    }
+  }
+
+  .windowHeaderRibbon {
+    height: 90%;
+    margin: 0 5px;
+    flex: 1;
+    opacity: 0.4;
+  }
 }
 
 .windowContent {
-    padding: 1rem;
-    font-family: sans-serif;
+  font-family: sans-serif;
+  flex: 1;
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
 }

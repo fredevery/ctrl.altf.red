@@ -88,7 +88,6 @@ export const usePageTransitionState = () => {
     onExit: (callback: CallbackFunction) =>
       (callbacks.onExitCallback = callback),
     onExitComplete: (callback: CallbackFunction) => {
-      console.log("onExitComplete", callback);
       callbacks.onExitCompleteCallback = callback;
     },
     onEnter: (callback: CallbackFunction) =>
