@@ -9,7 +9,9 @@ export default function Page({
 }>) {
     return (
         <div className={`${className} ${styles.page}`}>
-            {children}
+            <div className={styles.pageContent}>
+                {children}
+            </div>
         </div>
     )
 }

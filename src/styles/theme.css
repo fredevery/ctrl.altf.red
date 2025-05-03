@@ -1,6 +1,7 @@
 :root {
   --column-border-color: gray;
   --color-background: #0b0117;
+  --color-text: #efefef;
   --color-background-complementary: hsl(83, 100%, 50%);
   /* --faint-accent-color: rgba(255, 255, 255, 1); */
   --color-primary: hsl(318, 100%, 50%);
@@ -11,7 +12,8 @@
   --faint-accent-color: gray;
   --color-window-border: rgba(255, 255, 255, 0.7);
   --color-window-background: rgb(from var(--color-background) r g b / 0.8);
-  --color-window-title: rgba(255, 255, 255, 0.7);
+  --color-window-title: rgba(255, 255, 255, 0.4);
+  /* --color-window-title: var(--color-primary); */
 }
 
 body {

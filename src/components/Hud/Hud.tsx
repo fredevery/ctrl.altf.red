@@ -1,7 +1,7 @@
 'use client';
 
-import './Hud.css';
 import { Nav } from '@/components';
+import styles from './Hud.module.css';
 
 function getVersion() {
     const startDate = new Date(1983, 6, 31); // July is month 6 (0-based)
@@ -22,10 +22,16 @@ function getVersion() {
     return `${years}.${months}`;
 }
 
+function Edges() {
+    return (
+        <div className={styles.edges} />
+    )
+}
+
 export default function Hud() {
 
     return (
-        <div className="hud">
+        <div className={styles.hud}>
             {/* <div className="frame">
                 <div className="borders-top"></div>
                 <div className="borders-bottom"></div>
@@ -33,6 +39,7 @@ export default function Hud() {
                 <div className="accents-two"></div>
             </div> */}
             <Nav />
+            <Edges />
             {/* <div className="os-details phosphorous">FeOS v{getVersion()}</div> */}
             {/* <div className="hud-logo">ctrl.altf.red</div> */}
         </div>

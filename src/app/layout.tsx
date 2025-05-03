@@ -1,67 +1,15 @@
 import type { Metadata } from "next";
 import { /*EffectsOverlay,*/ Hud, Background, SVGFilters, Meta } from "@/components";
-import localFont from "next/font/local";
+import { WindowFrameStyle } from "@/components/Window/Window";
 
 // import { backgroundPortalAtom } from "@/atoms/portalAtoms";
-// import Grid from "@/components/Grid/Grid";
+import Fonts from "@/components/Fontst/Fonts";
+import Grid from "@/components/Grid/Grid";
 import LayoutCube from "@/components/LayoutCube/LayoutCube";
 
 import "@/styles/base.css";
 import styles from "./layout.module.css";
 
-const baseMonoFont = localFont({
-  src: [
-    {
-      // path: "../../public/fonts/3270/3270NerdFontMono-Regular.ttf",
-      // path: "../../public/fonts/Glass_TTY_VT220.ttf",
-      // path: "../../public/fonts/Web437_IBM_3270pc.woff",
-      // path: "../../public/fonts/Ac437_OlivettiThin_8x16.ttf",
-      // path: "../../public/fonts/Disket-Mono-Regular.ttf",
-      // path: "../../public/fonts/Arturito Slab_v2.ttf",
-      // path: "../../public/fonts/CPMono_v07 Plain.otf",
-      path: "../../public/fonts/PixelCode.woff2",
-      weight: "400",
-      style: "normal",
-    }
-  ],
-  fallback: ["monospace"],
-});
-const accentMonoFont = localFont({
-  src: [
-    {
-      // path: "../../public/fonts/Boxy-Bold.ttf",
-      // path: "../../public/fonts/Typodermic - JoystixMonospace-Regular.otf",
-      path: "../../public/fonts/Telegrama Raw.ttf",
-      weight: "400",
-      style: "normal",
-    }
-  ],
-  fallback: ["monospace"],
-});
-const titleFont = localFont({
-  src: [
-    {
-      // path: "../../public/fonts/RealVhsFontRegular-WyV0z.ttf",
-      path: "../../public/fonts/PPSupplyMono-Ultralight.woff2",
-      // path: "../../public/fonts/CPMono_v07 Plain.otf",
-      // path: "../../public/fonts/Disket-Mono-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    }
-  ],
-  declarations: [{
-    prop: "line-gap-override",
-    value: "20%"
-  }]
-})
-
-const fontVariables = `
-  :root {
-    --base-mono-font: ${baseMonoFont.style.fontFamily};
-    --accent-mono-font: ${accentMonoFont.style.fontFamily};
-    --title-font: ${titleFont.style.fontFamily};
-  }
-`
 
 
 export const metadata: Metadata = {
@@ -76,24 +24,21 @@ export default function RootLayout({
 }>) {
 
   return (
-    <>
-      <style href="fonts-variables" precedence="high">{fontVariables}</style>
-      <html lang="en">
-        <body className={`${styles.pixelMask} ${styles.body}`}>
-          <main className={styles.rootLayout}>
-            <LayoutCube>
-              {children}
-            </LayoutCube>
-          </main>
-          {/* <EffectsOverlay /> */}
-          <Background />
-          {/* <Grid /> */}
-          <Hud />
-          {/* <Terminal /> */}
-          <SVGFilters />
-          <Meta />
-        </body>
-      </html>
-    </>
+    <html lang="en">
+      <Fonts />
+      <WindowFrameStyle />
+      <body className={`${styles.pixelMask} ${styles.body}`}>
+        <Grid />
+        <main className={styles.rootLayout}>
+          {children}
+        </main>
+        {/* <EffectsOverlay /> */}
+        <Background />
+        <Hud />
+        {/* <Terminal /> */}
+        <SVGFilters />
+        <Meta />
+      </body>
+    </html>
   );
 }

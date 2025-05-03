@@ -8,6 +8,7 @@
   /* perspective: 100vw;
   transform-style: preserve-3d; */
   pointer-events: none;
+  z-index: 10000;
 }
 
 .gridPattern,

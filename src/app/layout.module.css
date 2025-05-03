@@ -5,7 +5,7 @@
 }
 
 .pixelMask {
-  mask-image: url("#pixel-mask");
+  /* mask-image: url("#pixel-mask"); */
   /* filter: url("#glitch") */
   /* mask-image: url('/pixel-mask.svg'); */
 }

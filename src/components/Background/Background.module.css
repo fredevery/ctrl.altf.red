@@ -5,10 +5,11 @@
   height: 100vh;
   width: 100vw;
   pointer-events: none;
-  background-image: radial-gradient(
+  background: var(--color-background);
+  /* background-image: radial-gradient(
     var(--color-background-center),
     var(--color-background-edge)
-  );
+  ); */
   z-index: var(--layer-background);
 
   &::before {

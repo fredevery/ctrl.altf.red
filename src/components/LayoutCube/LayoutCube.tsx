@@ -6,7 +6,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { usePageTransitionState } from "@/atoms/pageTransitionAtoms";
 import { usePathname } from "next/navigation";
 import { useWindowResize } from "@/utilities/useWindowResize";
-import Grid from "@/components/Grid/Grid";
+import Grid from "@/components/Grid/Grid.old";
 import GridBackground from "./GridBackground";
 import styles from "./LayoutCube.module.css";
 
