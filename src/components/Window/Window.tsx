@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from "react";
+import { v4 as uuid } from "uuid";
 
 import styles from "./Window.module.css";
 import { useWindowResize } from "@/utilities/useWindowResize";
@@ -12,6 +13,59 @@ interface WindowProps extends React.HTMLProps<HTMLDivElement> {
 const WINDOW_CORNER_SIZE = 6;
 const WINDOW_CORNER_BORDER_SIZE = 1;
 const WINDOW_FRAME_GAP = 4;
+const WINDOW_ZINDEX_MIN = 100;
+const WINDOW_ZINDEX_MAX = 200;
+
+interface WindowElement extends HTMLDivElement {
+    windowId?: string;
+}
+
+const windowManager: {
+    windows: Map<string, WindowElement>;
+    topWindow: HTMLDivElement | null;
+    windowOrder: Set<string>;
+    addWindow: (window: WindowElement) => void;
+    removeWindow: (window: WindowElement) => void;
+    setTopWindow: (window: WindowElement) => void;
+    processWindowOrder: () => void;
+} = {
+    windows: new Map(),
+    topWindow: null,
+    windowOrder: new Set(),
+    addWindow: (window: WindowElement) => {
+        window.windowId = uuid();
+        console.log("addWindow", window.windowId, window)
+        windowManager.windows.set(window.windowId, window);
+        windowManager.windowOrder.add(window.windowId);
+        windowManager.processWindowOrder();
+    },
+    removeWindow: (window: WindowElement) => {
+        console.log("removeWindow", window.windowId, window)
+        windowManager.windows.delete(window.windowId!);
+        windowManager.windowOrder.delete(window.windowId!);
+        windowManager.processWindowOrder();
+    },
+    setTopWindow: (window: WindowElement) => {
+        const newWindowOrder = new Set<string>();
+        Array.from(windowManager.windowOrder).forEach((windowId) => {
+            if (windowId !== window.windowId) {
+                newWindowOrder.add(windowId);
+            }
+        });
+        newWindowOrder.add(window.windowId!);
+        windowManager.windowOrder = newWindowOrder;
+        windowManager.processWindowOrder();
+    },
+    processWindowOrder: () => {
+        const windowOrder = Array.from(windowManager.windowOrder);
+        windowOrder.forEach((windowId, index) => {
+            const window = windowManager.windows.get(windowId);
+            if (window) {
+                window.style.zIndex = (WINDOW_ZINDEX_MIN + index).toString();
+            }
+        });
+    }
+}
 
 function WindowHeaderRibbon({ side }: { side?: "left" | "right" }) {
     // const textChar = side === "left" ? "\\" : "/";
@@ -120,22 +174,32 @@ export function WindowFrameStyle() {
 }
 
 
-function WindowHeader({ title, onMouseDown }: { title?: string, onMouseDown?: (event: React.MouseEvent) => void }) {
+function WindowHeader({
+    title,
+    onMouseDown,
+    onResetPosition
+}: {
+    title?: string,
+    onMouseDown?: (event: React.MouseEvent) => void,
+    onResetPosition?: (event: React.MouseEvent) => void
+}) {
     const windowHeaderRef = useRef<HTMLDivElement>(null);
     return (
-        <div ref={windowHeaderRef} className={styles.windowHeader} onMouseDown={onMouseDown}>
+        <div ref={windowHeaderRef} className={styles.windowHeader}>
             <div className={styles.windowHeaderContent}>
-                <div className={styles.windowHeaderRight}></div>
-                <WindowHeaderRibbon side="left" />
-                {title && (
-                    <>
-                        <div className={styles.windowTitle}>
-                            {title}
-                        </div>
-                        <WindowHeaderRibbon side="right" />
-                    </>
-                )}
                 <div className={styles.windowHeaderLeft}></div>
+                <div className={styles.windowHeaderCenter} onMouseDown={onMouseDown}>
+                    <WindowHeaderRibbon side="left" />
+                    {title && (
+                        <>
+                            <div className={styles.windowTitle}>
+                                {title}
+                            </div>
+                            <WindowHeaderRibbon side="right" />
+                        </>
+                    )}
+                </div>
+                <div className={styles.windowHeaderRight} onClick={onResetPosition}></div>
             </div>
             <div className={`${styles.windowHeaderFrame} window-header-frame`} />
         </div>
@@ -144,20 +208,20 @@ function WindowHeader({ title, onMouseDown }: { title?: string, onMouseDown?: (e
 
 export default function Window({ children, ...props }: WindowProps) {
     // const rootWindowSize = useWindowResize();
-    // const dragStartCoordinates = useRef({
-    //     mouseStart: {
-    //         x: 0,
-    //         y: 0
-    //     },
-    //     offsetStart: {
-    //         x: 0,
-    //         y: 0
-    //     }
-    // })
-    // const dragOffset = useRef({
-    //     x: 0,
-    //     y: 0
-    // })
+    const dragStartCoordinates = useRef({
+        mouseStart: {
+            x: 0,
+            y: 0
+        },
+        offsetStart: {
+            x: 0,
+            y: 0
+        }
+    })
+    const dragOffset = useRef({
+        x: 0,
+        y: 0
+    })
     const windowRef = useRef<HTMLDivElement>(null);
     // const [windowSize, setWindowSize] = useState({
     //     width: 0,
@@ -172,21 +236,36 @@ export default function Window({ children, ...props }: WindowProps) {
     //     });
     // }, [rootWindowSize])
     // const windowHeaderRef = useRef<HTMLDivElement>(null);
-    // const handleDrag = useRef((event: MouseEvent) => {
-    //     window.addEventListener("mouseup", handleMouseUp.current);
-    //     const { mouseStart, offsetStart } = dragStartCoordinates.current;
-    //     dragOffset.current = {
-    //         x: offsetStart.x + (event.clientX - mouseStart.x),
-    //         y: offsetStart.y + (event.clientY - mouseStart.y)
-    //     }
-    //     windowRef.current!.style.transform = `translate(${dragOffset.current.x}px, ${dragOffset.current.y}px)`
-    // });
-    // const handleMouseUp = useRef(() => {
-    //     windowHeaderRef.current!.classList.remove("dragging");
-    //     window.removeEventListener("mousemove", handleDrag.current);
-    //     window.removeEventListener("mouseup", handleMouseUp.current);
+    const handleDrag = useRef((event: MouseEvent) => {
+        const { mouseStart, offsetStart } = dragStartCoordinates.current;
+        dragOffset.current = {
+            x: offsetStart.x + (event.clientX - mouseStart.x),
+            y: offsetStart.y + (event.clientY - mouseStart.y)
+        }
+        windowRef.current!.style.transform = `translate(${dragOffset.current.x}px, ${dragOffset.current.y}px)`
+    });
+    const handleMouseUp = useRef(() => {
+        // windowHeaderRef.current!.classList.remove("dragging");
+        window.removeEventListener("mousemove", handleDrag.current);
+        window.removeEventListener("mouseup", handleMouseUp.current);
+    });
+    const handleResetPosition = useRef((event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dragOffset.current = {
+            x: 0,
+            y: 0
+        }
+        windowRef.current!.style.transform = `translate(0px, 0px)`
+    });
 
-    // })
+    useEffect(() => {
+        const windowRefCurrent = windowRef.current!;
+        windowManager.addWindow(windowRefCurrent);
+        return () => {
+            windowManager.removeWindow(windowRefCurrent);
+        }
+    }, [windowRef])
 
     if (props.className) {
         props.className = `window ${styles.window} ${props.className}`;
@@ -194,22 +273,43 @@ export default function Window({ children, ...props }: WindowProps) {
         props.className = `window ${styles.window}`;
     }
 
-    // function startDrag(event: React.MouseEvent) {
-    //     event.preventDefault();
-    //     dragStartCoordinates.current.mouseStart = {
-    //         x: event.clientX,
-    //         y: event.clientY
-    //     }
-    //     dragStartCoordinates.current.offsetStart = {
-    //         ...dragOffset.current
-    //     }
-    //     windowHeaderRef.current!.classList.add("dragging");
-    //     window.addEventListener("mousemove", handleDrag.current);
-    // }
+    function getWindowTranslate() {
+        const windowStyles = window.getComputedStyle(windowRef.current!);
+        const transform = windowStyles.getPropertyValue("transform");
+        const translate = {
+            x: 0,
+            y: 0
+        };
+
+        if (transform !== "none") {
+            const matrix = transform.match(/matrix\(([^)]+)\)/);
+            if (matrix) {
+                const values = matrix[1].split(", ");
+                translate.x = parseFloat(values[4]);
+                translate.y = parseFloat(values[5]);
+            }
+        }
+
+        return translate;
+    }
+
+    function startDrag(event: React.MouseEvent) {
+        event.preventDefault();
+        dragStartCoordinates.current.mouseStart = {
+            x: event.clientX,
+            y: event.clientY
+        }
+        dragStartCoordinates.current.offsetStart = getWindowTranslate();
+
+        windowManager.setTopWindow(windowRef.current!);
+        // windowHeaderRef.current!.classList.add("dragging");
+        window.addEventListener("mousemove", handleDrag.current);
+        window.addEventListener("mouseup", handleMouseUp.current);
+    }
 
     return (
         <div ref={windowRef} {...props}>
-            <WindowHeader title={props.title} />
+            <WindowHeader title={props.title} onMouseDown={startDrag} onResetPosition={handleResetPosition.current} />
             <div className={styles.windowBody}>
                 <div className={styles.windowBodyContent}>
                     {children}

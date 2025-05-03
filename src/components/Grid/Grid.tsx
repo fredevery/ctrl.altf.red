@@ -107,7 +107,6 @@ export default function Grid() {
                 }`
         })
     }, [width, height]);
-    console.log(gridConfig.cssVariables);
 
     return (
         <>

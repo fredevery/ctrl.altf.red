@@ -25,7 +25,7 @@
   grid-row: 1 / span 6;
   height: var(--grid-height-safe);
   grid-row: span 4; */
-  width: var(--column-span-7-safe);
+  width: var(--column-span-9-safe);
   height: var(--grid-height-safe);
 
   .imageWrapper {
